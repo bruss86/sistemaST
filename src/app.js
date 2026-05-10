@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 
-
+app.use(cors());
 const app = express();
 
 const instrumentoRoutes = require("./routes/instrumentoRoutes");
@@ -11,17 +11,16 @@ const clienteRoutes = require("./routes/clienteRoutes");
 
 
 
-app.use(
+/*app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://tu-frontend.vercel.app",
       "https://sistemast.onrender.com",
       "https://sistema-st-frontend.vercel.app/"
     ],
     credentials: true,
   })
-);
+);*/
 app.use(express.json());
 
 app.use("/instrumentos", instrumentoRoutes);
