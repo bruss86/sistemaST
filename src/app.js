@@ -16,7 +16,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://tu-frontend.vercel.app",
-      "https://sistemast.onrender.com"
+      "https://sistemast.onrender.com",
+      "https://sistema-st-frontend.vercel.app/"
     ],
     credentials: true,
   })
