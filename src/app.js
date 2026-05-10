@@ -15,7 +15,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://tu-frontend.vercel.app"
+      "https://tu-frontend.vercel.app",
+      "https://sistemast.onrender.com"
     ],
     credentials: true,
   })
