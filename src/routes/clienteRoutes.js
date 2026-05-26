@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const clienteController = require("../controllers/clienteController");
+const auth = require("../middleware/auth");
+
 
 const {
   getClientes,
@@ -11,20 +13,20 @@ const {
 } = require("../controllers/clienteController");
 
 // 📌 Obtener todos los clientes
-router.get("/", getClientes);
+router.get("/", auth, getClientes);
 
 // 📌 Obtener cliente por ID
-router.get("/:id", getClienteById);
+router.get("/:id", auth, getClienteById);
 
 // 📌 Crear cliente
-router.post("/", createCliente);
+router.post("/", auth, createCliente);
 
 // 📌 Actualizar cliente
-router.put("/:id", updateCliente);
+router.put("/:id", auth, updateCliente);
 
 // 📌 Eliminar cliente
-router.delete("/:id", deleteCliente);
+router.delete("/:id", auth, deleteCliente);
 
-router.get("/:id/instrumentos", clienteController.getInstrumentosByCliente);
+router.get("/:id/instrumentos", auth, clienteController.getInstrumentosByCliente);
 
 module.exports = router;

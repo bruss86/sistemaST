@@ -11,7 +11,8 @@ const instrumentoSchema = new mongoose.Schema(
 
     numeroPartida: {
       type: String,
-      required: true,
+      unique: true,
+      sparse: true,
       trim: true,
     },
 
@@ -25,6 +26,7 @@ const instrumentoSchema = new mongoose.Schema(
       type: String,
       required: false,
       enum: ["Comodato", "Propio", "Alquilado"],
+      default: "Comodato",
     },
 
     cliente: {
@@ -35,7 +37,7 @@ const instrumentoSchema = new mongoose.Schema(
 
     fechaUltimoMantenimiento: {
       type: Date,
-      default: null,
+      default: undefined,
     },
   },
   {

@@ -8,7 +8,11 @@ const {
   createInstrumento,
   updateInstrumento,
   deleteInstrumento,
+  obtenerInstrumentosPorCliente,
 } = require("../controllers/instrumentoController");
+
+// Obtener instrumentos por cliente
+router.get("/cliente/:clienteId", auth, obtenerInstrumentosPorCliente);
 
 // Obtener todos los instrumentos
 router.get("/", auth, getInstrumentos);
@@ -24,5 +28,7 @@ router.put("/:id", auth, updateInstrumento);
 
 // Eliminar instrumento
 router.delete("/:id", auth, deleteInstrumento);
+
+
 
 module.exports = router;
