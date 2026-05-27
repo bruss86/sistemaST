@@ -5,9 +5,7 @@ exports.crearTarea = async (req, res) => {
     const nueva  = new Tarea({
       ...req.body,
 
-      fecha: req.body.fecha
-        ? new Date(req.body.fecha + "T00:00:00")
-        : null,
+      fecha: req.body.fecha,
     });
 
     await nueva.save();
@@ -39,9 +37,7 @@ exports.actualizarTarea = async (req, res) => {
     const updateData = {
       ...req.body,
 
-      fecha: req.body.fecha
-        ? new Date(req.body.fecha + "T00:00:00")
-        : undefined,
+      fecha: req.body.fecha,
     };
 
     const tarea = await Tarea.findByIdAndUpdate(

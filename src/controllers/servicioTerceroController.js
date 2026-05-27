@@ -14,14 +14,12 @@ exports.crearServicio = async (req, res) => {
       costo,
     } = req.body;
         
-    const fecha = new Date(fechaServicio + "T00:00:00");
-
     const nuevoServicio = new ServicioTercero({
       instrumento,
       proveedor,
       tipoServicio,
       descripcion,
-      fechaServicio: fecha,
+      fechaServicio,
       costo,
     });
 
@@ -94,7 +92,7 @@ exports.actualizarServicio = async (req, res) => {
         proveedor: req.body.proveedor,
         tipoServicio: req.body.tipoServicio,
         descripcion: req.body.descripcion,
-        fechaServicio: new Date(req.body.fechaServicio + "T00:00:00"),
+        fechaServicio: req.body.fechaServicio,
         costo: req.body.costo,
       },
       {

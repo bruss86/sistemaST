@@ -21,9 +21,8 @@ const tareaSchema = new mongoose.Schema(
     },
 
     fecha: {
-      type: Date,
+      type: String,
       required: true,
-      default: Date.now,
       index: true,
     },
 

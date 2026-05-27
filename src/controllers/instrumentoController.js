@@ -108,13 +108,6 @@ exports.createInstrumento = async (req, res) => {
 exports.updateInstrumento = async (req, res) => {
   try {
 
-    // 🔥 corregir fecha para evitar problema timezone
-    if (req.body.fechaUltimoMantenimiento) {
-      req.body.fechaUltimoMantenimiento = new Date(
-        req.body.fechaUltimoMantenimiento + "T00:00:00"
-      );
-    }
-
     const instrumentoAnterior = await Instrumento.findById(req.params.id);
 
     if (!instrumentoAnterior) {

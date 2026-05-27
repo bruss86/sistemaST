@@ -20,9 +20,8 @@ const servicioTerceroSchema = new mongoose.Schema(
       type: String,
     },
     fechaServicio: {
-      type: Date,
+      type: String,
       required: true,
-      default: Date.now,
     },
     costo: {
       type: Number,

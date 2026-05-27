@@ -36,7 +36,7 @@ const instrumentoSchema = new mongoose.Schema(
     },
 
     fechaUltimoMantenimiento: {
-      type: Date,
+      type: String,
       default: undefined,
     },
   },
