@@ -14,6 +14,7 @@ const instrumentoSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
       trim: true,
+      required: false,
     },
 
     descripcion: {
@@ -38,6 +39,7 @@ const instrumentoSchema = new mongoose.Schema(
     fechaUltimoMantenimiento: {
       type: String,
       default: undefined,
+      required: false,
     },
   },
   {

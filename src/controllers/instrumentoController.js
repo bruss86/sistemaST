@@ -48,6 +48,7 @@ exports.createInstrumento = async (req, res) => {
       descripcion,
       condicion,
       cliente,
+      fechaUltimoMantenimiento,
     } = req.body;
 
     // validar cliente obligatorio
@@ -64,14 +65,6 @@ exports.createInstrumento = async (req, res) => {
         error: "Cliente no encontrado",
       });
     }
-
-    // 🔥 corregir timezone
-    const fechaUltimoMantenimiento =
-      req.body.fechaUltimoMantenimiento
-        ? new Date(
-            req.body.fechaUltimoMantenimiento + "T00:00:00"
-          )
-        : null;
 
     const nuevoInstrumento = new Instrumento({
       numeroSerie,
