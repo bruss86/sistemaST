@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const cron = require("node-cron");
+//const cron = require("node-cron");
 const authRoutes = require("./routes/authRoutes");
 const servicioTerceroRoutes = require("./routes/servicioTerceroRoutes");
 const gmailAuth = require("./routes/gmailAuth");
@@ -9,7 +9,7 @@ const gmailAuth = require("./routes/gmailAuth");
 const procesarCorreos =
   require("./jobs/procesarCorreos");
 
-cron.schedule("* * * * *", async () => {
+/*cron.schedule("* * * * *", async () => {
 
   console.log("Buscando correos...");
 
@@ -41,6 +41,7 @@ const casos = require("./routes/casos");
     credentials: true,
   })
 );*/
+
 app.use(express.json());
 
 app.use("/instrumentos", instrumentoRoutes);
