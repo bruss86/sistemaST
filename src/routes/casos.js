@@ -194,4 +194,26 @@ router.post("/email", async (req, res) => {
 
 });
 
+router.get("/gmail-profile", async (req, res) => {
+  try {
+
+    const profile =
+      await gmail.users.getProfile({
+        userId: "me",
+      });
+
+    res.json(profile.data);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+      stack: error.stack,
+    });
+
+  }
+});
+
 module.exports = router;
