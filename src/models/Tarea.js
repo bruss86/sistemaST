@@ -5,13 +5,13 @@ const tareaSchema = new mongoose.Schema(
     cliente: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Cliente",
-      required: true,
+      required: false,
     },
 
     instrumento: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instrumento",
-      required: true,
+      required: false,
     },
 
     tarea: {
