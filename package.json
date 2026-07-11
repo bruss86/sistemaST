@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.1",
     "node-cron": "^4.2.1",
+    "nodemailer": "^9.0.3",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

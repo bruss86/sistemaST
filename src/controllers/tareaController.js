@@ -1,4 +1,5 @@
 const Tarea = require("../models/Tarea");
+const transporter = require("../config/mail");
 
 exports.crearTarea = async (req, res) => {
   try {
@@ -80,38 +81,23 @@ exports.obtenerTareaPorId = async (req, res) => {
 
 exports.enviarResumenTareas = async (req, res) => {
   try {
-    const tareas = await Tarea.find({
-      estado: {
-        $in: ["Pendiente", "En proceso"],
-      },
-    })
-      .populate("cliente", "nombre")
-      .populate("instrumento", "descripcion numeroSerie")
-      .sort({
-        fecha: 1,
-      });
-
-    console.log(`Se encontraron ${tareas.length} tareas pendientes.`);
-
-    tareas.forEach((t) => {
-      console.log(
-        `${t.fecha} | ${t.cliente?.nombre || "-"} | ${
-          t.instrumento?.descripcion || "-"
-        } | ${t.tarea}`
-      );
+    await transporter.sendMail({
+      from: `"Sistema ST" <${process.env.SMTP_USER}>`,
+      to: process.env.RESUMEN_EMAIL,
+      subject: "Prueba Sistema ST",
+      text: "Este es un correo de prueba enviado desde el Sistema ST.",
     });
 
     res.json({
       ok: true,
-      cantidad: tareas.length,
-      tareas,
+      mensaje: "Correo enviado correctamente.",
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
 
     res.status(500).json({
       ok: false,
-      error: err.message,
+      error: error.message,
     });
   }
 };
