@@ -9,6 +9,7 @@ const {
   obtenerTareaPorId,
   actualizarTarea,
   eliminarTarea,
+  enviarResumenTareas,
 } = require("../controllers/tareaController");
 
 // =========================
