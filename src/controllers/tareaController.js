@@ -84,7 +84,19 @@ exports.enviarResumenTareas = async (req, res) => {
     // Generar HTML
     // Enviar mail
 
-    console.log("GitHub Actions ejecutó el resumen.");
+    const tareas = await Tarea.find({
+        estado: {
+          $in: ["Pendiente", "En proceso"],
+        },
+      })
+        .populate("cliente", "nombre")
+        .populate("instrumento", "descripcion numeroSerie")
+        .sort({
+          fecha: 1,
+          prioridad: -1,
+        });
+
+      console.log("Tareas encontradas:", tareas.length);
 
     res.json({
       ok: true,
