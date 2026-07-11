@@ -77,3 +77,26 @@ exports.obtenerTareaPorId = async (req, res) => {
     res.status(500).json({ error: "Error obteniendo tarea" });
   }
 };
+
+exports.enviarResumenTareas = async (req, res) => {
+  try {
+    // Buscar tareas
+    // Generar HTML
+    // Enviar mail
+
+    console.log("GitHub Actions ejecutó el resumen.");
+
+    res.json({
+      ok: true,
+      mensaje: "Resumen enviado",
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      ok: false,
+      error: err.message,
+    });
+  }
+};
