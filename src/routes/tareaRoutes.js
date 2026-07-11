@@ -13,6 +13,11 @@ const {
 } = require("../controllers/tareaController");
 
 // =========================
+// ENDPOINT CRON
+// =========================
+router.post("/enviar-resumen", enviarResumenTareas);
+
+// =========================
 // CREATE
 // =========================
 router.post("/", auth, crearTarea);
@@ -36,7 +41,5 @@ router.put("/:id", auth, actualizarTarea);
 // DELETE
 // =========================
 router.delete("/:id", auth, eliminarTarea);
-
-router.post("/enviar-resumen", auth, enviarResumenTareas);
 
 module.exports = router;
