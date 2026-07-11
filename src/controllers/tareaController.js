@@ -80,29 +80,32 @@ exports.obtenerTareaPorId = async (req, res) => {
 
 exports.enviarResumenTareas = async (req, res) => {
   try {
-    // Buscar tareas
-    // Generar HTML
-    // Enviar mail
-
     const tareas = await Tarea.find({
-        estado: {
-          $in: ["Pendiente", "En proceso"],
-        },
-      })
-        .populate("cliente", "nombre")
-        .populate("instrumento", "descripcion numeroSerie")
-        .sort({
-          fecha: 1,
-          prioridad: -1,
-        });
+      estado: {
+        $in: ["Pendiente", "En proceso"],
+      },
+    })
+      .populate("cliente", "nombre")
+      .populate("instrumento", "descripcion numeroSerie")
+      .sort({
+        fecha: 1,
+      });
 
-      console.log("Tareas encontradas:", tareas.length);
+    console.log(`Se encontraron ${tareas.length} tareas pendientes.`);
+
+    tareas.forEach((t) => {
+      console.log(
+        `${t.fecha} | ${t.cliente?.nombre || "-"} | ${
+          t.instrumento?.descripcion || "-"
+        } | ${t.tarea}`
+      );
+    });
 
     res.json({
       ok: true,
-      mensaje: "Resumen enviado",
+      cantidad: tareas.length,
+      tareas,
     });
-
   } catch (err) {
     console.error(err);
 
