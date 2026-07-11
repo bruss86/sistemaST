@@ -37,6 +37,6 @@ router.put("/:id", auth, actualizarTarea);
 // =========================
 router.delete("/:id", auth, eliminarTarea);
 
-router.post("/enviar-resumen", enviarResumenTareas);
+router.post("/enviar-resumen", auth, enviarResumenTareas);
 
 module.exports = router;
