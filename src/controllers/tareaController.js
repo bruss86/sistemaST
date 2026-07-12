@@ -81,6 +81,8 @@ exports.obtenerTareaPorId = async (req, res) => {
 
 exports.enviarResumenTareas = async (req, res) => {
   try {
+    await transporter.verify();
+    console.log("SMTP OK");
     await transporter.sendMail({
       from: `"Sistema ST" <${process.env.SMTP_USER}>`,
       to: process.env.RESUMEN_EMAIL,
