@@ -14,6 +14,18 @@ const repuestoSchema = new mongoose.Schema(
       trim: true,
     },
 
+    fabricante: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    modelo: {
+      type: String,
+      default: "",
+      trim: true,
+    },  
+
     descripcion: {
       type: String,
       default: "",
