@@ -2,8 +2,8 @@ name: Enviar resumen diario
 
 on:
   schedule:
-    # Todos los días a las 11:00 UTC
-    - cron: "0 11 * * *"
+    # Todos los días a las 9:00 UTC
+    - cron: "0 9 * * *"
 
   # Permite ejecutarlo manualmente
   workflow_dispatch:
