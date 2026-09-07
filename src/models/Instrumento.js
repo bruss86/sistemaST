@@ -2,6 +2,15 @@ const mongoose = require("mongoose");
 
 const instrumentoSchema = new mongoose.Schema(
   {
+    
+    codigo: {
+      type: String,
+      required: false,
+      unique: false,
+      trim: true,
+      default: "",
+    },
+    
     numeroSerie: {
       type: String,
       required: true,
@@ -14,7 +23,6 @@ const instrumentoSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
       trim: true,
-      required: false,
     },
 
     descripcion: {
@@ -25,8 +33,7 @@ const instrumentoSchema = new mongoose.Schema(
 
     condicion: {
       type: String,
-      required: false,
-      enum: ["Comodato", "Propio", "Alquilado"],
+      enum: ["Comodato", "Propio", "Alquilado", "Prestado"],
       default: "Comodato",
     },
 
@@ -39,7 +46,6 @@ const instrumentoSchema = new mongoose.Schema(
     fechaUltimoMantenimiento: {
       type: String,
       default: undefined,
-      required: false,
     },
   },
   {

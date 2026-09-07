@@ -22,9 +22,8 @@ exports.getInstrumentos = async (req, res) => {
  */
 exports.getInstrumentoById = async (req, res) => {
   try {
-    const instrumento = await Instrumento.findById(req.params.id).populate(
-      "cliente"
-    );
+    const instrumento = await Instrumento.findById(req.params.id)
+    .populate("cliente");
 
     if (!instrumento) {
       return res.status(404).json({ error: "Instrumento no encontrado" });
@@ -43,6 +42,7 @@ exports.getInstrumentoById = async (req, res) => {
 exports.createInstrumento = async (req, res) => {
   try {
     const {
+      codigo,
       numeroSerie,
       numeroPartida,
       descripcion,
@@ -51,43 +51,67 @@ exports.createInstrumento = async (req, res) => {
       fechaUltimoMantenimiento,
     } = req.body;
 
-    // validar cliente obligatorio
-    if (!cliente) {
+    //validaciones básicas
+    if(!numeroSerie?.trim()) {
       return res.status(400).json({
-        error: "Cliente es obligatorio",
+        error: "Número de serie es obligatorio",
       });
     }
 
-    const clienteExiste = await Cliente.findById(cliente);
-
-    if (!clienteExiste) {
-      return res.status(404).json({
-        error: "Cliente no encontrado",
+    if(!descripcion?.trim()) {
+      return res.status(400).json({
+        error: "Descripción es obligatoria",
       });
     }
+
+    // validar cliente solamente si fue informado
+    if (cliente) {
+      const clienteExistente = await Cliente.findById(cliente);
+      if (!clienteExistente) {
+        return res.status(404).json({
+          error: "Cliente no encontrado",
+        });
+      }
+    }
+
+
 
     const nuevoInstrumento = new Instrumento({
-      numeroSerie,
-      numeroPartida,
-      descripcion,
-      condicion,
-      cliente,
-      fechaUltimoMantenimiento,
+      codigo: codigo?.trim() || "",
+      numeroSerie: numeroSerie.trim(),
+      numeroPartida: numeroPartida?.trim() || undefined,
+      descripcion: descripcion.trim(),
+      condicion: condicion || "Comodato",
+      cliente: cliente || undefined,
+      fechaUltimoMantenimiento: fechaUltimoMantenimiento || undefined,
     });
 
     const guardado = await nuevoInstrumento.save();
 
-    // actualizar cliente
-    await Cliente.updateOne(
-      { _id: cliente },
-      { $push: { instrumentos: guardado._id } }
-    );
+    //Agregar instrumento al cliente si fue informado
+    if (cliente) {
+      await Cliente.updateOne(
+        { _id: cliente },
+        { $addToSet: { instrumentos: guardado._id } }
+      );
+    }
 
-    res.status(201).json(guardado);
+    const resultado = await Instrumento.findById(guardado._id)
+    .populate("cliente");
+
+    res.status(201).json(resultado);
 
   } catch (error) {
     console.error(error);
 
+    //Errores de campos únicos
+    if (error.code === 11000) {
+      const campoDuplicado = Object.keys(error.keyPattern || {})[0];
+
+      return res.status(400).json({
+        error: `El valor para el campo '${campoDuplicado}' ya existe.`,
+      });
+    }
     res.status(400).json({
       error: "Error al crear instrumento",
       details: error.message,
@@ -109,30 +133,62 @@ exports.updateInstrumento = async (req, res) => {
       });
     }
 
-    // 🔥 si cambia el cliente, actualizar relaciones
-    if (
-      req.body.cliente &&
-      instrumentoAnterior.cliente?.toString() !== req.body.cliente
-    ) {
+    const nuevoCliente = req.body.cliente || null;
+
+    const clienteAnterior = instrumentoAnterior.cliente?.toString() || null;
+
+    // ==========================================
+    // CAMBIÓ EL CLIENTE
+    // ==========================================
+
+    if (clienteAnterior !== nuevoCliente) {
 
       // quitar del cliente anterior
-      if (instrumentoAnterior.cliente) {
+      if (clienteAnterior) {
         await Cliente.updateOne(
-          { _id: instrumentoAnterior.cliente },
+          { _id: clienteAnterior },
           { $pull: { instrumentos: instrumentoAnterior._id } }
         );
       }
 
+
       // agregar al nuevo cliente
+      if (nuevoCliente) {
+        const clienteExistente = await Cliente.findById(nuevoCliente);
+        
+        if (!clienteExistente) {
+          return res.status(404).json({
+            error: "Cliente no encontrado",
+          });
+        }
+      } 
+
+
+
       await Cliente.updateOne(
         { _id: req.body.cliente },
-        { $push: { instrumentos: instrumentoAnterior._id } }
+        { $addToSet: { instrumentos: instrumentoAnterior._id } }
       );
     }
 
+     // ==========================================
+    // PREPARAR DATOS
+    // ==========================================
+
+    const datos = {
+      codigo: req.body.codigo?.trim() || "",
+      numeroSerie: req.body.numeroSerie?.trim() || instrumentoAnterior.numeroSerie,
+      numeroPartida: req.body.numeroPartida?.trim() || undefined,
+      descripcion: req.body.descripcion?.trim() || instrumentoAnterior.descripcion,
+      condicion: req.body.condicion || instrumentoAnterior.condicion,
+      cliente: req.body.cliente || undefined,
+      fechaUltimoMantenimiento: req.body.fechaUltimoMantenimiento || undefined,
+    };
+    
+
     const actualizado = await Instrumento.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      datos,
       {
         new: true,
         runValidators: true,
@@ -144,8 +200,18 @@ exports.updateInstrumento = async (req, res) => {
   } catch (error) {
     console.error(error);
 
+    //Errores de campos únicos
+    if (error.code === 11000) {
+      const campoDuplicado = Object.keys(error.keyPattern || {})[0];
+    
+    return res.status(400).json({
+      error: `El valor para el campo '${campoDuplicado}' ya existe.`,
+    });
+  }
+
     res.status(400).json({
       error: "Error al actualizar instrumento",
+      details: error.message,
     });
   }
 };
