@@ -47,6 +47,12 @@ const instrumentoSchema = new mongoose.Schema(
       type: String,
       default: undefined,
     },
+
+    notas: {
+      type: String,
+      trim: true,
+      default: undefined,
+    },
   },
   {
     timestamps: true,

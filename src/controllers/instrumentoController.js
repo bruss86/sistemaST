@@ -49,6 +49,7 @@ exports.createInstrumento = async (req, res) => {
       condicion,
       cliente,
       fechaUltimoMantenimiento,
+      notas,
     } = req.body;
 
     //validaciones básicas
@@ -84,6 +85,7 @@ exports.createInstrumento = async (req, res) => {
       condicion: condicion || "Comodato",
       cliente: cliente || undefined,
       fechaUltimoMantenimiento: fechaUltimoMantenimiento || undefined,
+      notas: notas?.trim() || undefined,
     });
 
     const guardado = await nuevoInstrumento.save();
@@ -183,6 +185,7 @@ exports.updateInstrumento = async (req, res) => {
       condicion: req.body.condicion || instrumentoAnterior.condicion,
       cliente: req.body.cliente || undefined,
       fechaUltimoMantenimiento: req.body.fechaUltimoMantenimiento || undefined,
+      notas: req.body.notas?.trim() || undefined,
     };
     
 
