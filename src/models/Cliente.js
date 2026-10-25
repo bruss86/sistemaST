@@ -13,6 +13,7 @@ const clienteSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      unique: false,
     },
 
     direccion: {

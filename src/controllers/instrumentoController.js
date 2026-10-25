@@ -165,8 +165,6 @@ exports.updateInstrumento = async (req, res) => {
         }
       } 
 
-
-
       await Cliente.updateOne(
         { _id: req.body.cliente },
         { $addToSet: { instrumentos: instrumentoAnterior._id } }

@@ -14,13 +14,14 @@ const instrumentoSchema = new mongoose.Schema(
     numeroSerie: {
       type: String,
       required: true,
-      unique: true,
-      trim: true,
+      unique: false,
+      trim: true, //  Elimina espacios en blanco al inicio y al final
     },
 
     numeroPartida: {
       type: String,
-      unique: true,
+      unique: true, //se asegura que no se repita el número de partida
+      required: true,
       sparse: true,
       trim: true,
     },
