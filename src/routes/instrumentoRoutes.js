@@ -14,7 +14,7 @@ const {
 const { obtenerPrimerasSeisPestanas } = require("../services/googleSheets");
 
 // Ruta para el visor de las primeras 6 pestañas
-router.get("/visor-excel", async (req, res) => {
+router.get("/visor-excel", auth, async (req, res) => {
   try {
     const resultado = await obtenerPrimerasSeisPestanas();
     
