@@ -12,7 +12,7 @@ const instrumentoRoutes = require("./routes/instrumentoRoutes");
 const clienteRoutes = require("./routes/clienteRoutes");
 const repuestoRoutes = require("./routes/repuestoRoutes");
 const tareaRoutes = require("./routes/tareaRoutes");
-const casos = require("./routes/casos");
+//const casos = require("./routes/casos");
 
 /*app.use(
   cors({
@@ -34,7 +34,7 @@ app.use("/servicios-terceros", servicioTerceroRoutes);
 app.use("/repuestos", repuestoRoutes);
 app.use("/tareas", tareaRoutes);
 app.use("/gmail", gmailAuth);
-app.use("/casos", casos);
+//app.use("/casos", casos);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado"))

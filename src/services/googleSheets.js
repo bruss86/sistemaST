@@ -10,27 +10,45 @@ const auth = new google.auth.GoogleAuth({
     client_email: clientEmail,
     private_key: privateKey,
   },
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"], // Permiso de solo lectura
+  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
 });
 
 const sheets = google.sheets({ version: "v4", auth });
 
-/**
- * Lee un rango de la hoja para verificar la conexión y traer datos
- * @param {String} rango Rango a consultar, por defecto las primeras filas y columnas
- */
-async function leerDatosPrueba(rango = "Listado instrumental Sebia!A1:E5") {
+async function obtenerPrimerasSeisPestanas() {
   try {
-    const response = await sheets.spreadsheets.values.get({
+    // 1. Obtenemos los metadatos para listar las pestañas
+    const metaResponse = await sheets.spreadsheets.get({
       spreadsheetId,
-      range: rango,
     });
     
-    return response.data.values; // Retorna la matriz de filas y columnas
+    const todasLasHojas = metaResponse.data.sheets.map(s => s.properties.title);
+    const primerasSeis = todasLasHojas.slice(0, 6);
+
+    const datosPorPestana = {};
+
+    // 2. Iteramos agregando comillas simples al nombre (clave si hay espacios)
+    for (const nombreHoja of primerasSeis) {
+      try {
+        const response = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: `'${nombreHoja}'!A1:Z100`, // <-- Añadidas comillas simples aquí
+        });
+        datosPorPestana[nombreHoja] = response.data.values || [];
+      } catch (err) {
+        console.warn(`No se pudo leer la pestaña "${nombreHoja}":`, err.message);
+        datosPorPestana[nombreHoja] = [];
+      }
+    }
+
+    return {
+      nombresHojas: primerasSeis,
+      contenido: datosPorPestana
+    };
   } catch (error) {
-    console.error("Error leyendo Google Sheets:", error);
+    console.error("Error general al obtener las pestañas:", error);
     throw error;
   }
 }
 
-module.exports = { leerDatosPrueba };
+module.exports = { obtenerPrimerasSeisPestanas };

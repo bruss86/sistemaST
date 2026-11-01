@@ -11,32 +11,23 @@ const {
   obtenerInstrumentosPorCliente,
 } = require("../controllers/instrumentoController");
 
-// 1. Importamos la función de lectura de Google Sheets
-const { leerDatosPrueba } = require("../services/googleSheets");
+const { obtenerPrimerasSeisPestanas } = require("../services/googleSheets");
 
-// === RUTA TEMPORAL DE PRUEBA DE GOOGLE SHEETS ===
-router.get("/probar-sheets", async (req, res) => {
+// Ruta para el visor de las primeras 6 pestañas
+router.get("/visor-excel", async (req, res) => {
   try {
-    console.log("Intentando leer Google Sheets...");
-    const datos = await leerDatosPrueba();
+    const resultado = await obtenerPrimerasSeisPestanas();
     
-    if (!datos || datos.length === 0) {
-      return res.json({ 
-        status: "ok", 
-        mensaje: "Conexión exitosa, pero la hoja está vacía en ese rango." 
-      });
-    }
-
     res.json({
       status: "success",
-      mensaje: "¡Conexión y lectura exitosa desde Google Sheets!",
-      filasObtenidas: datos
+      totalPestanas: resultado.nombresHojas.length,
+      nombres: resultado.nombresHojas,
+      data: resultado.contenido
     });
   } catch (error) {
-    console.error("Error en la ruta de prueba:", error);
     res.status(500).json({ 
       status: "error", 
-      mensaje: "Fallo la conexión con Google Sheets", 
+      mensaje: "No se pudieron cargar las pestañas del Excel", 
       detalles: error.message 
     });
   }
