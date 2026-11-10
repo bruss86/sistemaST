@@ -49,6 +49,13 @@ const tareaSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+
+    caso: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Caso",
+      required: false,
+      default: null,
+    },
   },
   {
     timestamps: true,

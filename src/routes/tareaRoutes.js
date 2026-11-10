@@ -10,6 +10,7 @@ const {
   actualizarTarea,
   eliminarTarea,
   enviarResumenTareas,
+  crearTareaDesdeCaso,
 } = require("../controllers/tareaController");
 
 // =========================
@@ -21,6 +22,11 @@ router.post("/enviar-resumen", enviarResumenTareas);
 // CREATE
 // =========================
 router.post("/", auth, crearTarea);
+
+// =========================
+// NUEVA RUTA: Crear tarea desde un caso de soporte
+// =========================
+router.post("/desde-caso/:casoId", auth, crearTareaDesdeCaso);
 
 // =========================
 // READ ALL

@@ -15,40 +15,38 @@ const auth = new google.auth.GoogleAuth({
 
 const sheets = google.sheets({ version: "v4", auth });
 
-async function obtenerPrimerasSeisPestanas() {
+async function obtenerPrimeraHojaSieteColumnas() {
   try {
-    // 1. Obtenemos los metadatos para listar las pestañas
+    // 1. Obtenemos los metadatos para identificar el título de la primera hoja
     const metaResponse = await sheets.spreadsheets.get({
       spreadsheetId,
     });
     
     const todasLasHojas = metaResponse.data.sheets.map(s => s.properties.title);
-    const primerasSeis = todasLasHojas.slice(0, 6);
-
-    const datosPorPestana = {};
-
-    // 2. Iteramos agregando comillas simples al nombre (clave si hay espacios)
-    for (const nombreHoja of primerasSeis) {
-      try {
-        const response = await sheets.spreadsheets.values.get({
-          spreadsheetId,
-          range: `'${nombreHoja}'!A1:Z100`, // <-- Añadidas comillas simples aquí
-        });
-        datosPorPestana[nombreHoja] = response.data.values || [];
-      } catch (err) {
-        console.warn(`No se pudo leer la pestaña "${nombreHoja}":`, err.message);
-        datosPorPestana[nombreHoja] = [];
-      }
+    if (todasLasHojas.length === 0) {
+      throw new Error("El documento de Google Sheets no contiene hojas.");
     }
 
+    const primeraHoja = todasLasHojas[0]; // Selecciona estrictamente la primera hoja
+
+    // 2. Solicitamos únicamente las columnas de la A hasta la G (primeras 7 columnas)
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: `'${primeraHoja}'!A1:G`,
+    });
+
+    const datosHoja = response.data.values || [];
+
     return {
-      nombresHojas: primerasSeis,
-      contenido: datosPorPestana
+      nombresHojas: [primeraHoja],
+      contenido: {
+        [primeraHoja]: datosHoja
+      }
     };
   } catch (error) {
-    console.error("Error general al obtener las pestañas:", error);
+    console.error("Error al obtener la primera hoja de Google Sheets:", error);
     throw error;
   }
 }
 
-module.exports = { obtenerPrimerasSeisPestanas };
+module.exports = { obtenerPrimerasSeisPestanas: obtenerPrimeraHojaSieteColumnas };

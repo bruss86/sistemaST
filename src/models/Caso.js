@@ -19,6 +19,20 @@ const casoSchema = new mongoose.Schema({
 
   asunto: String,
 
+  cliente: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cliente",
+    required: false,
+    default: null,
+  },
+
+  instrumento: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Instrumento",
+    required: false,
+    default: null,
+  },
+
   estado: {
     type: String,
     default: "Abierto",

@@ -1,5 +1,6 @@
 const Tarea = require("../models/Tarea");
 const resend = require("../config/mail");
+const Caso = require("../models/Caso");
 
 exports.crearTarea = async (req, res) => {
   try {
@@ -341,5 +342,56 @@ Correo generado automáticamente por Sistema ST.
       ok: false,
       error: error.message,
     });
+  }
+};
+
+// =========================
+// CREAR TAREA DESDE CASO
+// =========================
+exports.crearTareaDesdeCaso = async (req, res) => {
+  try {
+    const { casoId } = req.params;
+    const { prioridad } = req.body;
+
+    // Buscamos el caso y poblamos cliente e instrumento
+    const caso = await Caso.findById(casoId)
+      .populate("cliente", "nombre")
+      .populate("instrumento", "descripcion numeroSerie");
+
+    if (!caso) return res.status(404).json({ error: "Caso no encontrado" });
+
+    // Textos informativos para la descripción de la tarea
+    const nombreCliente = caso.cliente?.nombre || "Sin cliente asignado";
+    const infoInstrumento = caso.instrumento 
+      ? `${caso.instrumento.descripcion} (S/N: ${caso.instrumento.numeroSerie || 'N/A'})` 
+      : "Sin instrumento asignado";
+
+    const tituloTarea = `Caso #${caso.numero}: ${caso.asunto}`;
+    const notasTarea = 
+      `Remitente: ${caso.remitente}\n` +
+      `Cliente: ${nombreCliente}\n` +
+      `Instrumento: ${infoInstrumento}\n` +
+      `-----------------------------------\n` +
+      `Derivado desde el caso #${caso.numero}`;
+
+    // 🛠️ Creamos la tarea pasando los campos requeridos por Mongoose Y las referencias de cliente/instrumento
+    const nuevaTarea = await Tarea.create({
+      tarea: tituloTarea,
+      descripcion: notasTarea,
+      fecha: new Date().toISOString().split('T')[0],
+      prioridad: prioridad || "Media",
+      estado: "Pendiente",
+      cliente: caso.cliente?._id || null,         // 👈 Guardamos la referencia para que TareasList la lea
+      instrumento: caso.instrumento?._id || null, // 👈 Guardamos la referencia del instrumento
+      caso: caso._id                              // Referencia al caso de origen
+    });
+
+    res.status(201).json({ 
+      message: "Tarea creada con éxito a partir del caso", 
+      tarea: nuevaTarea 
+    });
+  } catch (error) {
+    console.error("Error al crear tarea desde caso:", error);
+    res.status(500).json({ error: "Error al crear la tarea" });
   }
 };
